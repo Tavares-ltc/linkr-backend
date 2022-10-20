@@ -1,5 +1,5 @@
 import { getTrendingHashtags } from "../repositories/hashtagsRepository.js";
-import { getPostsByHashtagName } from "../repositories/postsRapository.js";
+import { getPostsByHashtagName } from "../repositories/postsRepository.js";
 import { notFoundRequestResponse, okResponse, serverErrorResponse } from "./controllerHelper.js";
 
 async function listTrendingHashtags(req, res) {
@@ -17,7 +17,7 @@ async function listTrendingHashtags(req, res) {
 };
 
 async function getHashtagPosts(req, res) {
-    const { name } = req.body;
+    const { name } = req.params;
 
     try {
         const posts = await getPostsByHashtagName(name);
@@ -30,7 +30,7 @@ async function getHashtagPosts(req, res) {
     } catch (error) {
         return serverErrorResponse(res);
     }
-}
+};
 
 export {
     listTrendingHashtags,
