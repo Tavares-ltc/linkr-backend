@@ -1,3 +1,4 @@
+import urlMetadata from "url-metadata";
 import { selectPosts, insertPost } from "../repositories/postsRepository.js";
 import {
   serverErrorResponse,
@@ -9,7 +10,20 @@ async function readPosts(req, res) {
   try {
     const posts = await selectPosts();
 
-    res.status(201).send(posts.rows);
+    const data = await Promise.all(
+      posts.rows.map(async (post) => {
+        const metadata = await urlMetadata(post.postLink);
+        return await {
+          ...post,
+          metadataTitle: metadata.title,
+          metadataDescription: metadata.description,
+          metadataImage: metadata.image,
+          metadataUrl: metadata.url,
+        };
+      })
+    );
+
+    res.status(201).send(data);
   } catch (error) {
     serverErrorResponse(res, error);
   }
@@ -25,7 +39,7 @@ async function createPost(req, res) {
   }
 
   try {
-    const isCreated = await insertPost({ userId, description, link });
+    await insertPost({ userId, description, link });
 
     createdResponse(res);
   } catch (error) {

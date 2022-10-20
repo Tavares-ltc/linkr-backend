@@ -1,12 +1,12 @@
 import connection from "../database/db.js";
 
 function selectPosts() {
-  return connection.query("SELECT * FROM posts;");
+  return connection.query(
+    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM posts JOIN users ON posts."userId" = users.id;`
+  );
 }
 
 function insertPost({ userId, description, link }) {
-  console.log({ userId, description, link });
-
   return connection.query(
     `INSERT INTO posts ("userId", description, link) 
   VALUES ($1, $2, $3);`,
