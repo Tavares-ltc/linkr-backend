@@ -2,20 +2,18 @@ import { connection } from "../database/db.js";
 
 const TABLE = 'hashtags';
 
-async function getHashtagByName(name) {
-        return await connection.query(`SELECT * FROM ${TABLE} WHERE name = $1;`, [name]);
-};
-
 async function getTrendingHashtags() {
-    return await connection.query(
-        `SELECT ${TABLE}.name, COUNT(postsHashtags.id) AS occurrences
+    const hashtags = await connection.query(
+        `SELECT ${TABLE}.name, COUNT("postsHashtags".id) AS occurrences
         FROM ${TABLE}
-        JOIN postsHashtags 
-        ON ${TABLE}.id = postsHashtags."hashtagId"
+        JOIN "postsHashtags" 
+        ON ${TABLE}.id = "postsHashtags"."hashtagId"
         GROUP BY ${TABLE}.name
         ORDER BY occurrences DESC
         LIMIT 10;`
     );
+
+    return hashtags;
 };
 
 async function insertHashtag(res, name) {
@@ -36,7 +34,6 @@ async function updateHashtagCount(hashtag, post) {
 };
 
 export {
-    getHashtagByName,
     insertHashtag,
     updateHashtagCount,
     getTrendingHashtags
