@@ -3,7 +3,7 @@ import { postSignUp, postSignIn } from '../controllers/userController.js';
 import {
 	signInMiddleware,
 	signUpMiddleware,
-} from '../middleware/loginMiddleware.js';
+} from '../middlewares/loginMiddleware.js';
 
 const userRouter = Router();
 

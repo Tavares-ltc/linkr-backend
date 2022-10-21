@@ -5,7 +5,7 @@ import {
 	insertUser,
 	findUser,
 	insertUserSession,
-} from '../repositories/userRepositories.js';
+} from '../repositories/userRepository.js';
 
 const postSignUp = async (req, res) => {
 	let { name, email, password, image } = res.locals.user;

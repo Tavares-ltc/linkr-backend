@@ -1,4 +1,4 @@
-import connection from '../postgres/postgres.js';
+import connection from '../database/postgres.js';
 
 async function insertUser(name, email, hash, image) {
 	await connection.query(
