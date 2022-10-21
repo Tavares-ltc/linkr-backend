@@ -16,11 +16,10 @@ async function getTrendingHashtags() {
     return hashtags;
 };
 
-async function insertHashtag(res, name) {
+async function insertHashtag(name) {
         return await connection.query(
             `INSERT INTO ${TABLE} (name)
-            VALUES ($1)
-            ON CONFLICT (name) DO NOTHING;`,
+            VALUES ($1);`,
             [name]
         );
 };
