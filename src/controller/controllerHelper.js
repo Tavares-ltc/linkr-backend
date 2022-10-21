@@ -5,6 +5,7 @@ const STATUS_CODE = Object.freeze({
   BAD_REQUEST: 400,
   SERVER_ERROR: 500,
   NOT_FOUND: 404,
+  UNAUTHORIZED: 401,
 });
 
 const STATUS_TEXT = Object.freeze({
@@ -14,10 +15,15 @@ const STATUS_TEXT = Object.freeze({
   BAD_REQUEST: "bad request",
   SERVER_ERROR: "internal server error",
   NOT_FOUND: "not found",
+  UNAUTHORIZED: "unauthorized",
 });
 
 function badRequestResponse(res, text = STATUS_TEXT.BAD_REQUEST) {
   return res.status(STATUS_CODE.BAD_REQUEST).send(text);
+}
+
+function unauthorizedRequestResponse(res, text = STATUS_TEXT.UNAUTHORIZED) {
+  return res.status(STATUS_CODE.UNAUTHORIZED).send(text);
 }
 
 function notFoundRequestResponse(res, text = STATUS_TEXT.NOT_FOUND) {
@@ -45,6 +51,7 @@ function serverErrorResponse(res, error, text = STATUS_TEXT.SERVER_ERROR) {
 
 export {
   badRequestResponse,
+  unauthorizedRequestResponse,
   unprocessableRequestResponse,
   notFoundRequestResponse,
   okResponse,

@@ -1,9 +1,12 @@
 import urlMetadata from "url-metadata";
 import { selectPosts, insertPost } from "../repositories/postsRepository.js";
+import selectUser from "../repositories/userRepository.js";
 import {
   serverErrorResponse,
   unprocessableRequestResponse,
   createdResponse,
+  okResponse,
+  unauthorizedRequestResponse,
 } from "./controllerHelper.js";
 
 async function readPosts(req, res) {
@@ -23,23 +26,31 @@ async function readPosts(req, res) {
       })
     );
 
-    res.status(201).send(data);
+    okResponse(res, data);
   } catch (error) {
     serverErrorResponse(res, error);
   }
 }
 
 async function createPost(req, res) {
-  const { userId, description, link } = req.body;
+  const { description, link } = req.body;
 
-  const token = req.headers.authorization;
+  let token = req.headers.authorization;
 
   if (token?.split(" ")[0] !== "Bearer" || !token?.split(" ")[1]) {
     return unprocessableRequestResponse(res);
   }
 
+  token = token.split(" ")[1];
+
   try {
-    await insertPost({ userId, description, link });
+    const userExists = await selectUser(token);
+
+    if (userExists.rowCount === 0) {
+      return unauthorizedRequestResponse(res);
+    }
+
+    await insertPost({ userId: userExists.rows[0].id, description, link });
 
     createdResponse(res);
   } catch (error) {

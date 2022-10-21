@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import userPageRoutes from "./routes/usersPageRoutes.js";
 import postsRoutes from "./routes/postsRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use(userPageRoutes);
 app.use(postsRoutes);
+app.use(userRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
