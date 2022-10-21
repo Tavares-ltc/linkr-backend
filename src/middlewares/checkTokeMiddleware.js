@@ -1,5 +1,4 @@
 import {
-  unprocessableRequestResponse,
   serverErrorResponse,
   unauthorizedRequestResponse,
 } from "../controller/controllerHelper.js";
@@ -9,7 +8,7 @@ async function checkToken(req, res, next) {
   let token = req.headers.authorization;
 
   if (token?.split(" ")[0] !== "Bearer" || !token?.split(" ")[1]) {
-    return unprocessableRequestResponse(res);
+    return unauthorizedRequestResponse(res);
   }
 
   token = token.split(" ")[1];
