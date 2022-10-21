@@ -1,7 +1,7 @@
 import {
   unprocessableRequestResponse,
   serverErrorResponse,
-  notFoundRequestResponse,
+  unauthorizedRequestResponse,
 } from "../controller/controllerHelper.js";
 import selectUser from "../repositories/userRepository.js";
 
@@ -18,7 +18,7 @@ async function checkToken(req, res, next) {
     const tokenIsValid = await selectUser(token);
 
     if (tokenIsValid.rowCount === 0) {
-      return notFoundRequestResponse(res);
+      return unauthorizedRequestResponse(res);
     }
 
     next();
