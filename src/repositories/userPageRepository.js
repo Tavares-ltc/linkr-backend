@@ -1,4 +1,4 @@
-import connection from "../database/db.js";
+import connection from "../database/postgres.js";
 
 async function getUserById({ userId }) {
   const userData = await connection.query(
@@ -20,4 +20,11 @@ async function getPostsById({ userId }) {
   return postsList;
 }
 
-export { getUserById, getPostsById };
+async function searchUserByName(name) {
+  return connection.query(
+    `SELECT id, name FROM users WHERE users.name LIKE $1;`,
+    [name + '%']
+  );
+}
+
+export { getUserById, getPostsById, searchUserByName };
