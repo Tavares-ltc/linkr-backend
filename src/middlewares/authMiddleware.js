@@ -1,5 +1,5 @@
 import connection from "../database/postgres.js";
-import { unauthorizedResponse } from "../controllers/controllerHelper.js";
+import { unauthorizedRequestResponse } from "../controllers/controllerHelper.js";
 
 async function authMiddlewere(req, res, next) {
   const token = req.headers.authorization?.replace("Bearer ", "");
@@ -13,7 +13,7 @@ async function authMiddlewere(req, res, next) {
     );
 
     if (!session.rows[0]) {
-      return unauthorizedResponse(res);
+      return unauthorizedRequestResponse(res);
     }
     const user = await connection.query("SELECT * FROM users WHERE id=$1", [
       session.rows[0].userId,
