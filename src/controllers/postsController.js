@@ -1,6 +1,6 @@
 import urlMetadata from "url-metadata";
 import { selectPosts, insertPost } from "../repositories/postsRepository.js";
-import selectUser from "../repositories/userRepository.js";
+import { selectUser } from "../repositories/userRepository.js";
 import {
   serverErrorResponse,
   unprocessableRequestResponse,

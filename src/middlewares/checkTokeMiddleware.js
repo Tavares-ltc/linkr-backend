@@ -1,8 +1,8 @@
 import {
   serverErrorResponse,
   unauthorizedRequestResponse,
-} from "../controller/controllerHelper.js";
-import selectUser from "../repositories/userRepository.js";
+} from "../controllers/controllerHelper.js";
+import { selectUser } from "../repositories/userRepository.js";
 
 async function checkToken(req, res, next) {
   let token = req.headers.authorization;

@@ -1,10 +1,10 @@
-import selectUser from "../repositories/userRepository.js";
+import { selectUser } from "../repositories/userRepository.js";
 import {
   serverErrorResponse,
   unprocessableRequestResponse,
   okResponse,
   notFoundRequestResponse,
-} from "./controllerHelper.js";
+} from "../controllers/controllerHelper.js";
 
 async function readUser(req, res) {
   let token = req.headers.authorization;

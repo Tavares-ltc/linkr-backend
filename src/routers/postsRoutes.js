@@ -1,6 +1,6 @@
 import { Router } from "express";
 import checkToken from "../middlewares/checkTokeMiddleware.js";
-import { readPosts, createPost } from "../controller/postsController.js";
+import { readPosts, createPost } from "../controllers/postsController.js";
 
 const route = Router();
 
