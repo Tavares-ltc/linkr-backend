@@ -1,4 +1,5 @@
 import urlMetadata from "url-metadata";
+import { getHashtagByName, insertHashtag, updateHashtagCount } from "../repositories/hashtagsRepository.js";
 import { selectPosts, insertPost, deleteThisPost, updateThisPost } from "../repositories/postsRepository.js";
 import { selectUser } from "../repositories/userRepository.js";
 import {
@@ -33,7 +34,7 @@ async function readPosts(req, res) {
 }
 
 async function createPost(req, res) {
-  const { description, link } = req.body;
+  const { description, link, hashtags } = req.body;
 
   let token = req.headers.authorization;
 
@@ -50,7 +51,12 @@ async function createPost(req, res) {
       return unauthorizedRequestResponse(res);
     }
 
-    await insertPost({ userId: userExists.rows[0].id, description, link });
+    const inserted = await insertPost({ userId: userExists.rows[0].id, description, link });
+    for (let i = 0; i < hashtags.length; i++) {
+      await insertHashtag(hashtags[i]);
+      const hashtag = await getHashtagByName(hashtags[i]);
+      await updateHashtagCount(hashtag.rows[0].id, inserted.rows[0].id);
+    };
 
     createdResponse(res);
   } catch (error) {

@@ -1,4 +1,17 @@
-import connection from "../database/db.js";
+import connection from "../database/postgres.js";
+
+async function getPostsByHashtagName(name) {
+    return await connection.query(
+        `SELECT posts.*
+        FROM posts
+        JOIN "postsHashtags"
+        ON posts.id = "postsHashtags"."postId"
+        JOIN hashtags
+        ON hashtags.id = "postsHashtags"."hashtagId"
+        WHERE hashtags.name = $1;`,
+        [name]
+    );
+};
 
 function selectPosts() {
   return connection.query(
@@ -9,7 +22,8 @@ function selectPosts() {
 function insertPost({ userId, description, link }) {
   return connection.query(
     `INSERT INTO posts ("userId", description, link) 
-  VALUES ($1, $2, $3);`,
+  VALUES ($1, $2, $3)
+  RETURNING id;`,
     [userId, description, link]
   );
 }
@@ -31,4 +45,4 @@ async function updateThisPost({postId, description}){
 }
 
 
-export { selectPosts, insertPost, deleteThisPost, updateThisPost };
+export { selectPosts, insertPost, deleteThisPost, updateThisPost, getPostsByHashtagName };
