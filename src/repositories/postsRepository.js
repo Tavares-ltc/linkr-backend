@@ -1,4 +1,4 @@
-import { connection } from "../database/db.js";
+import connection from "../database/postgres.js";
 
 async function getPostsByHashtagName(name) {
     return await connection.query(

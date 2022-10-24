@@ -50,6 +50,10 @@ const STATUS_CODE = Object.freeze({
   function conflictResponse(res, text = STATUS_TEXT.CONFLICT) {
     return res.status(STATUS_CODE.CONFLICT).send(text);
   }
+
+  function createdResponse(res, text = STATUS_TEXT.CREATED) {
+    return res.status(STATUS_CODE.CREATED).send(text);
+  }
   
   export {
     badRequestResponse,
@@ -58,5 +62,6 @@ const STATUS_CODE = Object.freeze({
     okResponse,
     serverErrorResponse,
     unauthorizedResponse,
-    conflictResponse
+    conflictResponse,
+    createdResponse
   };

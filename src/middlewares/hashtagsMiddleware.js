@@ -2,10 +2,10 @@ import { hashtagSchema } from "../schemas/hashtagsSchema.js";
 import { validateSchema } from "./schemasValidation.js";
 
 async function hashtagsMiddleware(req, res, next) {
-    const { name } = req.body;
+    const { hashtags } = req.body;
     validateSchema(res, hashtagSchema, req.body);
 
-    res.locals.hashtagName = name;
+    res.locals.hashtags = hashtags;
     next();
 };
 

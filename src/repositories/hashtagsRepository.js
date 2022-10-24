@@ -1,6 +1,10 @@
-import { connection } from "../database/db.js";
+import connection from "../database/postgres.js";
 
 const TABLE = 'hashtags';
+
+async function getHashtagByName(hashtag) {
+    return await connection.query('SELECT * FROM hashtags WHERE name = $1;', [hashtag]);
+}
 
 async function getTrendingHashtags() {
     const hashtags = await connection.query(
@@ -19,7 +23,8 @@ async function getTrendingHashtags() {
 async function insertHashtag(name) {
         return await connection.query(
             `INSERT INTO ${TABLE} (name)
-            VALUES ($1);`,
+            VALUES ($1)
+            ON CONFLICT (name) DO NOTHING;`,
             [name]
         );
 };
@@ -35,5 +40,6 @@ async function updateHashtagCount(hashtag, post) {
 export {
     insertHashtag,
     updateHashtagCount,
-    getTrendingHashtags
+    getTrendingHashtags,
+    getHashtagByName
 }

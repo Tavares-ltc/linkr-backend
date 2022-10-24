@@ -1,6 +1,6 @@
-import { getTrendingHashtags, insertHashtag } from "../repositories/hashtagsRepository.js";
+import { getHashtagByName, getTrendingHashtags, insertHashtag, updateHashtagCount } from "../repositories/hashtagsRepository.js";
 import { getPostsByHashtagName } from "../repositories/postsRepository.js";
-import { conflictResponse, notFoundRequestResponse, okResponse, serverErrorResponse } from "./controllerHelper.js";
+import { notFoundRequestResponse, okResponse, serverErrorResponse } from "./controllerHelper.js";
 
 async function listTrendingHashtags(req, res) {
     try {
@@ -32,13 +32,14 @@ async function getHashtagPosts(req, res) {
 };
 
 async function postNewHashtag(req, res) {
-    const { hashtagName } = res.locals;
+    const { hashtags } = res.locals;
 
     try {
-        const inserted = await insertHashtag(hashtagName);
-        if (inserted.rowCount === 0) {
-            return conflictResponse(res);
-        }
+        for (let i = 0; i < hashtags.length; i++) {
+            await insertHashtag(hashtags[i]);
+            const hashtag = await getHashtagByName(hashtags[i]);
+            await updateHashtagCount(hashtag.rows[0].id);
+        };
         return okResponse(res);
     } catch (error) {
         return serverErrorResponse(res, error);
