@@ -8,11 +8,11 @@ async function getUserById({ userId }) {
   return userData;
 }
 
-async function getPostsById({ userId }) {
+async function getPostsById(userId) {
   const postsList = await connection.query(
     `
     SELECT  posts.*, COUNT(likes."postId") AS likes 
-    FROM posts JOIN likes ON likes."postId" = posts.id 
+    FROM posts LEFT JOIN likes ON likes."postId" = posts.id 
     WHERE posts."userId" = $1 
     GROUP BY posts.id, posts."userId" ;`,
     [userId]
@@ -22,7 +22,7 @@ async function getPostsById({ userId }) {
 
 async function searchUserByName(name) {
   return connection.query(
-    `SELECT id, name FROM users WHERE users.name LIKE $1;`,
+    `SELECT id, name, image FROM users WHERE users.name LIKE $1;`,
     [name + '%']
   );
 }

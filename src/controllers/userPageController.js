@@ -1,3 +1,4 @@
+import urlMetadata from "url-metadata";
 import {
   getUserById,
   getPostsById,
@@ -29,15 +30,28 @@ async function getUserData(req, res) {
 }
 
 async function getUserPosts(req, res) {
-  const userId = req.params.id;
-  if (!userId) {
+  const id = req.params.id
+  
+  if (!id) {
     return unprocessableRequestResponse(res, "The request needs a user id.");
   }
 
   try {
-    const postsList = await getPostsById({ userId });
-
-    return okResponse(res, postsList.rows);
+    const postsList = await getPostsById(id);
+    
+    const data = await Promise.all(
+      postsList.rows.map(async (post) => {
+        const metadata = await urlMetadata(post.link);
+        return await {
+          ...post,
+          metadataTitle: metadata.title,
+          metadataDescription: metadata.description,
+          metadataImage: metadata.image,
+          metadataUrl: metadata.url,
+        }
+      })
+      );
+    okResponse(res, data);
   } catch (error) {
     serverErrorResponse(res, error);
   }
