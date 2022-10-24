@@ -64,7 +64,7 @@ async function deletePost(req,res){
   try {
       const post = await deleteThisPost({postId})
       if(userId != post.rows[0].userId){return res.sendStatus(401)}
-      return res.send(post.rows[0]);
+      return res.sendStatus(200);
   } catch (error) {
     serverErrorResponse(res, error);
   } 
@@ -77,7 +77,7 @@ async function updatePost(req,res){
   try {
       const post = await updateThisPost({postId, description})
       if(id != post.rows[0].userId){return res.sendStatus(401)}
-      return res.send(post.rows[0]);
+      return res.sendStatus(200);
   } catch (error) {
     serverErrorResponse(res, error);
   } 
