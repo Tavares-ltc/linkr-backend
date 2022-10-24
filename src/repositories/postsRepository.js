@@ -28,8 +28,21 @@ function insertPost({ userId, description, link }) {
   );
 }
 
-export { 
-    selectPosts,
-    insertPost,
-    getPostsByHashtagName
-};
+async function deleteThisPost({postId}){
+  try {
+  const post = await connection.query('SELECT * FROM posts WHERE id=$1;',[postId])
+  await connection.query('DELETE FROM posts WHERE id=$1;',[postId])
+  return post
+  } catch (error) {
+    console.error(error)
+  }
+  
+}
+
+async function updateThisPost({postId, description}){
+  await connection.query('UPDATE posts SET description=$1 WHERE id=$2;',[description, postId])
+  return connection.query('SELECT * FROM posts WHERE id=$1;',[postId]);
+}
+
+
+export { selectPosts, insertPost, deleteThisPost, updateThisPost, getPostsByHashtagName };

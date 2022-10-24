@@ -6,6 +6,7 @@ import userRouter from './routers/userRouter.js';
 import userPageRoutes from "./routers/usersPageRouter.js";
 import userInfoRoute from "./routers/userInfoRoute.js";
 import postsRoutes from "./routers/postsRoutes.js";
+import likeRouter from "./routers/likeRouter.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(userRouter);
 app.use(hashtagsRouter);
 app.use(userInfoRoute);
 app.use(postsRoutes);
+app.use(likeRouter);
 
 app.get('/status', (req, res) => res.status(200).send('ok'));
 
