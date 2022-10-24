@@ -1,3 +1,4 @@
+import urlMetadata from "url-metadata";
 import { getHashtagByName, getTrendingHashtags, insertHashtag, updateHashtagCount } from "../repositories/hashtagsRepository.js";
 import { getPostsByHashtagName } from "../repositories/postsRepository.js";
 import { notFoundRequestResponse, okResponse, serverErrorResponse } from "./controllerHelper.js";
@@ -25,7 +26,20 @@ async function getHashtagPosts(req, res) {
             return notFoundRequestResponse(res);
         };
 
-        return okResponse(res, posts.rows);
+        const data = await Promise.all(
+            posts.rows.map(async (post) => {
+              const metadata = await urlMetadata(post.link);
+              return await {
+                ...post,
+                metadataTitle: metadata.title,
+                metadataDescription: metadata.description,
+                metadataImage: metadata.image,
+                metadataUrl: metadata.url,
+              };
+            })
+          );
+
+        return okResponse(res, data);
     } catch (error) {
         return serverErrorResponse(res);
     }

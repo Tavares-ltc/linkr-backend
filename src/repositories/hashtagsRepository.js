@@ -8,11 +8,11 @@ async function getHashtagByName(hashtag) {
 
 async function getTrendingHashtags() {
     const hashtags = await connection.query(
-        `SELECT ${TABLE}.name, COUNT("postsHashtags".id) AS occurrences
+        `SELECT ${TABLE}.id, ${TABLE}.name, COUNT("postsHashtags".id) AS occurrences
         FROM ${TABLE}
         JOIN "postsHashtags" 
         ON ${TABLE}.id = "postsHashtags"."hashtagId"
-        GROUP BY ${TABLE}.name
+        GROUP BY ${TABLE}.name, ${TABLE}.id
         ORDER BY occurrences DESC
         LIMIT 10;`
     );
