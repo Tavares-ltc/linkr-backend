@@ -81,8 +81,8 @@ async function updatePost(req,res){
   const { postId } = req.params;
   const { id } = res.locals.user;
   try {
-      const post = await updateThisPost({postId, description})
-      if(id != post.rows[0].userId){return res.sendStatus(401)}
+    const post = await updateThisPost({postId, description})
+    if(id != post.rows[0].userId){return res.sendStatus(401)}
       return res.sendStatus(200);
   } catch (error) {
     serverErrorResponse(res, error);

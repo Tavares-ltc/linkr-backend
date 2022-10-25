@@ -7,7 +7,7 @@ import userPageRoutes from "./routers/usersPageRouter.js";
 import userInfoRoute from "./routers/userInfoRoute.js";
 import postsRoutes from "./routers/postsRoutes.js";
 import likeRouter from "./routers/likeRouter.js";
-
+import followRouter from "./routers/followRouter.js"
 dotenv.config();
 
 const app = express();
@@ -21,6 +21,7 @@ app.use(hashtagsRouter);
 app.use(userInfoRoute);
 app.use(postsRoutes);
 app.use(likeRouter);
+app.use(followRouter)
 
 app.get('/status', (req, res) => res.status(200).send('ok'));
 

@@ -1,17 +1,17 @@
 import connection from "../database/postgres.js";
 
 async function getPostsByHashtagName(name) {
-    return await connection.query(
-        `SELECT posts.*
+  return await connection.query(
+    `SELECT posts.*
         FROM posts
         JOIN "postsHashtags"
         ON posts.id = "postsHashtags"."postId"
         JOIN hashtags
         ON hashtags.id = "postsHashtags"."hashtagId"
         WHERE hashtags.name = $1;`,
-        [name]
-    );
-};
+    [name]
+  );
+}
 
 function selectPosts() {
   return connection.query(
@@ -28,21 +28,29 @@ function insertPost({ userId, description, link }) {
   );
 }
 
-async function deleteThisPost({postId}){
+async function deleteThisPost({ postId }) {
   try {
-  const post = await connection.query('SELECT * FROM posts WHERE id=$1;',[postId])
-  await connection.query('DELETE FROM posts WHERE id=$1;',[postId])
-  return post
+    const post = await connection.query("SELECT * FROM posts WHERE id=$1;", [
+      postId,
+    ]);
+    await connection.query("DELETE FROM posts WHERE id=$1;", [postId]);
+    return post;
   } catch (error) {
-    console.error(error)
+    console.error(error);
   }
-  
+}
+async function updateThisPost({ postId, description }) {
+  await connection.query("UPDATE posts SET description=$1 WHERE id=$2;", [
+    description,
+    postId,
+  ]);
+  return connection.query("SELECT * FROM posts WHERE id=$1;", [postId]);
 }
 
-async function updateThisPost({postId, description}){
-  await connection.query('UPDATE posts SET description=$1 WHERE id=$2;',[description, postId])
-  return connection.query('SELECT * FROM posts WHERE id=$1;',[postId]);
-}
-
-
-export { selectPosts, insertPost, deleteThisPost, updateThisPost, getPostsByHashtagName };
+export {
+  selectPosts,
+  insertPost,
+  deleteThisPost,
+  updateThisPost,
+  getPostsByHashtagName,
+};
