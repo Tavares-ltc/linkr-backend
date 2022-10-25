@@ -16,9 +16,7 @@ async function checkFollow(req, res){
     }
     
     try {
-        console.log(userId, personId)
         const isFollower = ((await checkFollowConnection(userId, personId)).rows[0]);
-        console.log(isFollower)
         if(!isFollower){
             return okResponse(res, 'false')
         }    
