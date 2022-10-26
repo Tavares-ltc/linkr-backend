@@ -47,7 +47,6 @@ async function deleteThisPost({ postId }) {
     console.error(error);
   }
 }
-
 async function updateThisPost({ postId, description }) {
   await connection.query("UPDATE posts SET description=$1 WHERE id=$2;", [
     description,
