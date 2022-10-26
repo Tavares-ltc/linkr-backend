@@ -6,7 +6,7 @@ import { authMiddlewere } from "../middlewares/authMiddleware.js";
 const router = Router()
 
 router.get('/follow/:personId', authMiddlewere, checkFollow)
-router.post('/follow/:personId', authMiddlewere, followPerson)
+router.post('/follow', authMiddlewere, followPerson)
 router.delete('/follow/:personId', authMiddlewere, unfollowPerson)
 
 export default router
