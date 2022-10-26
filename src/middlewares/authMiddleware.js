@@ -4,7 +4,7 @@ import { unauthorizedRequestResponse } from "../controllers/controllerHelper.js"
 async function authMiddlewere(req, res, next) {
   const token = req.headers.authorization?.replace("Bearer ", "");
   if (!token) {
-    return unauthorizedResponse(res);
+    return unauthorizedRequestResponse(res);
   }
   try {
     const session = await connection.query(
