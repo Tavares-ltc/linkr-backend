@@ -13,9 +13,17 @@ async function getPostsByHashtagName(name) {
   );
 }
 
-function selectPosts() {
+function selectPosts(id) {
   return connection.query(
-    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM posts JOIN users ON posts."userId" = users.id ORDER BY posts.id DESC LIMIT 20;`
+    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM follows JOIN posts ON follows."followedId" = posts."userId" JOIN users ON follows."followedId" = users.id WHERE follows."followerId" = $1 ORDER BY posts.id DESC;`,
+    [id]
+  );
+}
+
+function selectPeopleIFollow(id) {
+  return connection.query(
+    `SELECT follows."followedId" FROM follows WHERE follows."followerId" = $1;`,
+    [id]
   );
 }
 
@@ -53,4 +61,5 @@ export {
   deleteThisPost,
   updateThisPost,
   getPostsByHashtagName,
+  selectPeopleIFollow,
 };

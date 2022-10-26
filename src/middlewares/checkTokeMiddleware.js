@@ -20,6 +20,8 @@ async function checkToken(req, res, next) {
       return unauthorizedRequestResponse(res);
     }
 
+    res.locals.userId = tokenIsValid.rows[0].id;
+
     next();
   } catch (error) {
     return serverErrorResponse(res, error);
