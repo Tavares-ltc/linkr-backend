@@ -2,7 +2,7 @@ import connection from '../database/postgres.js';
 
 const postComment = async (req, res) => {
 	let { message, userId, postId } = req.body;
-	console.log(req.body);
+
 	// name = stripHtml(name).result.trim();
 	// email = stripHtml(email).result.trim();
 	// password = stripHtml(password).result.trim();
@@ -16,12 +16,7 @@ const postComment = async (req, res) => {
 			[message, postId, userId]
 		);
 
-		console.log('okayyyyy');
-		console.log(message);
-		console.log(userId);
-		console.log(postId);
-
-		res.send('okayyyy2');
+		res.status(201);
 	} catch (error) {
 		console.log(error);
 	}
@@ -41,4 +36,18 @@ const getComments = async (req, res) => {
 	}
 };
 
-export { postComment, getComments };
+const getCommentsCount = async (req, res) => {
+	const { postId } = req.params;
+
+	try {
+		const comments = await connection.query(
+			'SELECT COUNT("postId") FROM comments WHERE "postId" = $1;',
+			[postId]
+		);
+		res.send(comments.rows[0].count);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export { postComment, getComments, getCommentsCount };
