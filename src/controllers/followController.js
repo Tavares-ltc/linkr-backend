@@ -28,7 +28,7 @@ async function checkFollow(req, res){
 
 async function followPerson(req, res){
     const userId = res.locals.user.id;
-    const {personId} = req.params
+    const {personId} = req.body
     if(!personId){
         return unprocessableRequestResponse(res)
     }
