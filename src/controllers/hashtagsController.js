@@ -18,6 +18,7 @@ async function listTrendingHashtags(req, res) {
 
 async function getHashtagPosts(req, res) {
     const { name } = req.params;
+    console.log(name);
 
     try {
         const posts = await getPostsByHashtagName(name);
@@ -25,10 +26,11 @@ async function getHashtagPosts(req, res) {
         if (posts.rowCount === 0) {
             return notFoundRequestResponse(res);
         };
+        console.log(posts.rows)
 
         const data = await Promise.all(
             posts.rows.map(async (post) => {
-              const metadata = await urlMetadata(post.link);
+              const metadata = await urlMetadata(post.postLink);
               return await {
                 ...post,
                 metadataTitle: metadata.title,
@@ -41,6 +43,7 @@ async function getHashtagPosts(req, res) {
 
         return okResponse(res, data);
     } catch (error) {
+        console.log('deu ruim');
         return serverErrorResponse(res);
     }
 };

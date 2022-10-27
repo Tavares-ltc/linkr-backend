@@ -9,7 +9,7 @@ async function getUserById({ userId }) {
 }
 
 async function getPostsById(userId) {
-  const postsList = await connection.query(
+  const postsList = await connection.query(-
     `
     SELECT  posts.*, COUNT(likes."postId") AS likes 
     FROM posts LEFT JOIN likes ON likes."postId" = posts.id 
