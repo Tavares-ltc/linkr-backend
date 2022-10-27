@@ -22,7 +22,7 @@ async function getPostsById(userId) {
 
 async function searchUserByName(name) {
   return connection.query(
-    `SELECT id, name, image FROM users WHERE users.name LIKE $1;`,
+    `SELECT id, name, image FROM users WHERE users.name ILIKE $1;`,
     [name + '%']
   );
 }
