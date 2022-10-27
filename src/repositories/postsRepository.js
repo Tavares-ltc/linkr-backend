@@ -20,6 +20,13 @@ function selectPosts(id) {
   );
 }
 
+function selectPostsCount(id) {
+  return connection.query(
+    `SELECT COUNT(posts.id) FROM follows JOIN posts ON follows."followedId" = posts."userId" JOIN users ON follows."followedId" = users.id WHERE follows."followerId" = $1;`,
+    [id]
+  );
+}
+
 function selectPeopleIFollow(id) {
   return connection.query(
     `SELECT follows."followedId" FROM follows WHERE follows."followerId" = $1;`,
@@ -62,4 +69,5 @@ export {
   updateThisPost,
   getPostsByHashtagName,
   selectPeopleIFollow,
+  selectPostsCount,
 };
