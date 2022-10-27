@@ -14,7 +14,7 @@ async function checkFollow(req, res){
     if(!personId){
         return unprocessableRequestResponse(res, 'The requisition needs the id of the person')
     }
-    if(personId === userId){
+    if(personId == userId){
         return okResponse(res, 'same user')
     }
     try {
