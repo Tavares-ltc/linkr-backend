@@ -3,6 +3,8 @@ import {
 	postComment,
 	getComments,
 	getCommentsCount,
+	verifyFollower,
+	getIdByToken,
 } from '../controllers/commentsController.js';
 
 const commentsRouter = Router();
@@ -10,5 +12,7 @@ const commentsRouter = Router();
 commentsRouter.post('/comments', postComment);
 commentsRouter.get('/comments/:postId', getComments);
 commentsRouter.get('/commentscount/:postId', getCommentsCount);
+commentsRouter.get('/verifyfollower', verifyFollower);
+commentsRouter.get('/getid', getIdByToken);
 
 export default commentsRouter;

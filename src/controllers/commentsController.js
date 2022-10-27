@@ -27,7 +27,22 @@ const getComments = async (req, res) => {
 
 	try {
 		const comments = await connection.query(
-			'SELECT * FROM comments WHERE "postId" = $1;',
+			`
+		SELECT 
+			posts."userId" AS "authorId",
+			posts.id AS "postId",
+			"commenterId",
+			users.name AS "commenterName",
+			comment,
+			t2.image AS "commenterImage"
+		FROM posts
+		JOIN comments 
+		  ON posts.id = comments."postId"
+		JOIN users
+		  ON users.id = "commenterId"
+		JOIN users AS t2 
+		  ON "commenterId" = t2.id
+		WHERE "postId" = $1;`,
 			[postId]
 		);
 		res.send(comments.rows);
@@ -50,4 +65,47 @@ const getCommentsCount = async (req, res) => {
 	}
 };
 
-export { postComment, getComments, getCommentsCount };
+const verifyFollower = async (req, res) => {
+	const { followerId, postAuthor } = req.body;
+
+	try {
+		const follow = await connection.query(
+			'SELECT * FROM follows WHERE "followerId" = $1 AND "followedId" = $2;',
+			[followerId, postAuthor]
+		);
+
+		res.status(200).send(follow);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const getIdByToken = async (req, res) => {
+	const token = req.headers.authorization?.replace('Bearer ', '');
+
+	try {
+		const commenterID = await connection.query(
+			`
+		SELECT 
+			"userId",
+			token,
+			image
+		FROM sessions
+		JOIN users 
+		  ON sessions."userId" = users.id
+		WHERE token = $1;`,
+			[token]
+		);
+		res.status(201).send(commenterID.rows[0]);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export {
+	postComment,
+	getComments,
+	getCommentsCount,
+	verifyFollower,
+	getIdByToken,
+};
