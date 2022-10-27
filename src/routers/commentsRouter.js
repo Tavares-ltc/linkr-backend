@@ -12,7 +12,7 @@ const commentsRouter = Router();
 commentsRouter.post('/comments', postComment);
 commentsRouter.get('/comments/:postId', getComments);
 commentsRouter.get('/commentscount/:postId', getCommentsCount);
-commentsRouter.get('/verifyfollower', verifyFollower);
+commentsRouter.post('/verifyfollower', verifyFollower);
 commentsRouter.get('/getid', getIdByToken);
 
 export default commentsRouter;
