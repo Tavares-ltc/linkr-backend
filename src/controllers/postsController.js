@@ -10,6 +10,7 @@ import {
   deleteThisPost,
   updateThisPost,
   selectPeopleIFollow,
+  selectPostsCount,
 } from "../repositories/postsRepository.js";
 import { selectUser } from "../repositories/userRepository.js";
 import {
@@ -111,4 +112,18 @@ async function updatePost(req, res) {
   }
 }
 
-export { readPosts, createPost, updatePost, deletePost };
+async function postsCount(req, res) {
+  const { userId } = res.locals;
+
+  try {
+    const countPosts = await selectPostsCount(userId);
+
+    const following = await selectPeopleIFollow(userId);
+
+    okResponse(res, [countPosts.rows[0].count, following.rows]);
+  } catch (error) {
+    serverErrorResponse(res, error);
+  }
+}
+
+export { readPosts, createPost, updatePost, deletePost, postsCount };
