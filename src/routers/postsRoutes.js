@@ -5,7 +5,7 @@ import { authMiddlewere } from "../middlewares/authMiddleware.js";
 
 const route = Router();
 
-route.get("/posts", checkToken, readPosts);
+route.get("/posts", readPosts);
 route.post("/posts", createPost);
 route.delete('/delete/:postId', authMiddlewere ,deletePost)
 route.put('/updatePost/:postId', authMiddlewere, updatePost)

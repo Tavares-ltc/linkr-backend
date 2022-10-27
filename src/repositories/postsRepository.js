@@ -13,9 +13,13 @@ async function getPostsByHashtagName(name) {
     );
 };
 
-function selectPosts() {
+function selectPosts(page) {
   return connection.query(
-    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM posts JOIN users ON posts."userId" = users.id ORDER BY posts.id DESC LIMIT 20;`
+    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage"
+    FROM posts JOIN users ON posts."userId" = users.id
+    ORDER BY posts.id DESC LIMIT 10
+    OFFSET 10 * $1;`,
+    [page]
   );
 }
 
