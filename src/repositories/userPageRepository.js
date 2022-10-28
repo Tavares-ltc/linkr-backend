@@ -9,12 +9,16 @@ async function getUserById({ userId }) {
 }
 
 async function getPostsById(userId) {
-  const postsList = await connection.query(-
+  const postsList = await connection.query(
     `
-    SELECT  posts.*, COUNT(likes."postId") AS likes 
-    FROM posts LEFT JOIN likes ON likes."postId" = posts.id 
-    WHERE posts."userId" = $1 
-    GROUP BY posts.id, posts."userId" ;`,
+    SELECT posts.id, posts."userId", posts.description AS "postDescription",
+	    posts.link AS "postLink", users.name AS "userName", users.image AS "userImage"
+    FROM posts
+    JOIN users
+    ON users.id = posts."userId"
+    WHERE users.id = $1
+    ORDER BY posts."createdAt" DESC
+    LIMIT 20;`,
     [userId]
   );
   return postsList;
@@ -22,7 +26,7 @@ async function getPostsById(userId) {
 
 async function searchUserByName(name) {
   return connection.query(
-    `SELECT id, name, image FROM users WHERE users.name LIKE $1;`,
+    `SELECT id, name, image FROM users WHERE users.name ILIKE $1;`,
     [name + '%']
   );
 }

@@ -11,7 +11,6 @@ const signUpMiddleware = (req, res, next) => {
 		const errors = validation.error.details
 			.map((value) => value.message)
 			.join(',\n');
-		console.log(errors);
 		return res.status(422).send(errors);
 	}
 

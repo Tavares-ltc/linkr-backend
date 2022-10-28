@@ -1,6 +1,17 @@
 import urlMetadata from "url-metadata";
-import { getHashtagByName, insertHashtag, updateHashtagCount } from "../repositories/hashtagsRepository.js";
-import { selectPosts, insertPost, deleteThisPost, updateThisPost } from "../repositories/postsRepository.js";
+import {
+  getHashtagByName,
+  insertHashtag,
+  updateHashtagCount,
+} from "../repositories/hashtagsRepository.js";
+import {
+  selectPosts,
+  insertPost,
+  deleteThisPost,
+  updateThisPost,
+  selectPeopleIFollow,
+  selectPostsCount,
+} from "../repositories/postsRepository.js";
 import { selectUser } from "../repositories/userRepository.js";
 import {
   serverErrorResponse,
@@ -11,8 +22,12 @@ import {
 } from "./controllerHelper.js";
 
 async function readPosts(req, res) {
+  const { userId } = res.locals;
+
   try {
-    const posts = await selectPosts();
+    const posts = await selectPosts(userId);
+
+    const following = await selectPeopleIFollow(userId);
 
     const data = await Promise.all(
       posts.rows.map(async (post) => {
@@ -27,7 +42,7 @@ async function readPosts(req, res) {
       })
     );
 
-    okResponse(res, data);
+    okResponse(res, [data, following.rows]);
   } catch (error) {
     serverErrorResponse(res, error);
   }
@@ -51,12 +66,16 @@ async function createPost(req, res) {
       return unauthorizedRequestResponse(res);
     }
 
-    const inserted = await insertPost({ userId: userExists.rows[0].id, description, link });
+    const inserted = await insertPost({
+      userId: userExists.rows[0].id,
+      description,
+      link,
+    });
     for (let i = 0; i < hashtags.length; i++) {
       await insertHashtag(hashtags[i]);
       const hashtag = await getHashtagByName(hashtags[i]);
       await updateHashtagCount(hashtag.rows[0].id, inserted.rows[0].id);
-    };
+    }
 
     createdResponse(res);
   } catch (error) {
@@ -64,29 +83,47 @@ async function createPost(req, res) {
   }
 }
 
-async function deletePost(req,res){
+async function deletePost(req, res) {
   const { postId } = req.params;
   const userId = res.locals.user.id;
   try {
-      const post = await deleteThisPost({postId})
-      if(userId != post.rows[0].userId){return res.sendStatus(401)}
-      return res.sendStatus(200);
+    const post = await deleteThisPost({ postId });
+    if (userId != post.rows[0].userId) {
+      return res.sendStatus(401);
+    }
+    return res.sendStatus(200);
   } catch (error) {
     serverErrorResponse(res, error);
-  } 
+  }
 }
 
-async function updatePost(req,res){
+async function updatePost(req, res) {
   const { description } = req.body;
   const { postId } = req.params;
   const { id } = res.locals.user;
   try {
-      const post = await updateThisPost({postId, description})
-      if(id != post.rows[0].userId){return res.sendStatus(401)}
-      return res.sendStatus(200);
+    const post = await updateThisPost({ postId, description });
+    if (id != post.rows[0].userId) {
+      return res.sendStatus(401);
+    }
+    return res.sendStatus(200);
   } catch (error) {
     serverErrorResponse(res, error);
-  } 
+  }
 }
 
-export { readPosts, createPost, updatePost, deletePost  };
+async function postsCount(req, res) {
+  const { userId } = res.locals;
+
+  try {
+    const countPosts = await selectPostsCount(userId);
+
+    const following = await selectPeopleIFollow(userId);
+
+    okResponse(res, [countPosts.rows[0].count, following.rows]);
+  } catch (error) {
+    serverErrorResponse(res, error);
+  }
+}
+
+export { readPosts, createPost, updatePost, deletePost, postsCount };

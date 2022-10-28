@@ -37,20 +37,20 @@ async function getUserPosts(req, res) {
   }
 
   try {
-    const postsList = await getPostsById(id);
+    const posts = await getPostsById(id);
     
     const data = await Promise.all(
-      postsList.rows.map(async (post) => {
-        const metadata = await urlMetadata(post.link);
-        return await {
-          ...post,
-          metadataTitle: metadata.title,
-          metadataDescription: metadata.description,
-          metadataImage: metadata.image,
-          metadataUrl: metadata.url,
-        }
-      })
-      );
+            posts.rows.map(async (post) => {
+              const metadata = await urlMetadata(post.postLink);
+              return await {
+                ...post,
+                metadataTitle: metadata.title,
+                metadataDescription: metadata.description,
+                metadataImage: metadata.image,
+                metadataUrl: metadata.url,
+              };
+            })
+          );
     okResponse(res, data);
   } catch (error) {
     serverErrorResponse(res, error);
