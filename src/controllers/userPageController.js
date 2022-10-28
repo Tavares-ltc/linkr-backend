@@ -58,12 +58,13 @@ async function getUserPosts(req, res) {
 }
 
 async function getUsers(req, res) {
+  const userId = res.locals.user.id;
   const { name } = req.params;
   if (!name) {
     return unprocessableRequestResponse(res, "The request needs a username.");
   }
   try {
-    const users = await searchUserByName(name);
+    const users = await searchUserByName(userId, name);
     if (users.rows.length === 0) {
       return notFoundRequestResponse(res, "No users found.");
     }

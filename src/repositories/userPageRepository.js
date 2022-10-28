@@ -24,10 +24,16 @@ async function getPostsById(userId) {
   return postsList;
 }
 
-async function searchUserByName(name) {
+async function searchUserByName(userId, name) {
   return connection.query(
-    `SELECT id, name, image FROM users WHERE users.name ILIKE $1;`,
-    [name + '%']
+    `SELECT users.id, users.name, users.image, 
+    (SELECT true FROM follows WHERE "followedId" = users.id AND "followerId" = $1) 
+    AS "isFollowing" 
+    FROM users 
+    JOIN follows ON "followedId" = users.id WHERE users.name ILIKE $2 
+    GROUP BY users.id ORDER BY "isFollowing";
+    `,
+    [userId ,name + '%']
   );
 }
 
