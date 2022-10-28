@@ -26,7 +26,7 @@ async function searchUserByName(userId, name) {
     (SELECT true FROM follows WHERE "followedId" = users.id AND "followerId" = $1) 
     AS "isFollowing" 
     FROM users 
-    JOIN follows ON "followedId" = users.id WHERE users.name ILIKE $2 
+    LEFT JOIN follows ON "followedId" = users.id WHERE users.name ILIKE $2 
     GROUP BY users.id ORDER BY "isFollowing";
     `,
     [userId ,name + '%']
