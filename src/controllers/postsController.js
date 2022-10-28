@@ -22,10 +22,11 @@ import {
 } from "./controllerHelper.js";
 
 async function readPosts(req, res) {
+  const { page } = req.query || 0;
   const { userId } = res.locals;
 
   try {
-    const posts = await selectPosts(userId);
+    const posts = await selectPosts(userId, page);
 
     const following = await selectPeopleIFollow(userId);
 

@@ -13,10 +13,10 @@ async function getPostsByHashtagName(name) {
   );
 }
 
-function selectPosts(id) {
+function selectPosts(id, page) {
   return connection.query(
-    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM follows JOIN posts ON follows."followedId" = posts."userId" JOIN users ON follows."followedId" = users.id WHERE follows."followerId" = $1 ORDER BY posts.id DESC;`,
-    [id]
+    `SELECT posts.id, posts."userId", posts.description "postDescription", posts.link "postLink", users.name "userName", users.image "userImage" FROM follows JOIN posts ON follows."followedId" = posts."userId" JOIN users ON follows."followedId" = users.id WHERE follows."followerId" = $1 ORDER BY posts.id DESC LIMIT 10 OFFSET 10 * $2;`,
+    [id, page]
   );
 }
 
