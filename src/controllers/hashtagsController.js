@@ -28,7 +28,7 @@ async function getHashtagPosts(req, res) {
 
         const data = await Promise.all(
             posts.rows.map(async (post) => {
-              const metadata = await urlMetadata(post.link);
+              const metadata = await urlMetadata(post.postLink);
               return await {
                 ...post,
                 metadataTitle: metadata.title,

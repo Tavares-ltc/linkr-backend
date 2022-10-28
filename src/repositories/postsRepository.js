@@ -2,16 +2,21 @@ import connection from "../database/postgres.js";
 
 async function getPostsByHashtagName(name) {
   return await connection.query(
-    `SELECT posts.*
-        FROM posts
-        JOIN "postsHashtags"
-        ON posts.id = "postsHashtags"."postId"
-        JOIN hashtags
-        ON hashtags.id = "postsHashtags"."hashtagId"
-        WHERE hashtags.name = $1;`,
+    `SELECT posts.id, posts."userId", posts.description AS "postDescription",
+        posts.link AS "postLink", users.name AS "userName", users.image AS "userImage"
+      FROM posts
+      JOIN users
+      ON users.id = posts."userId"
+      JOIN "postsHashtags"
+      ON posts.id = "postsHashtags"."postId"
+      JOIN hashtags
+      ON hashtags.id = "postsHashtags"."hashtagId"
+      WHERE hashtags.name = $1
+      ORDER BY posts."createdAt" DESC
+      LIMIT 20;`,
     [name]
   );
-}
+};
 
 function selectPosts(id) {
   return connection.query(

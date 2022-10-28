@@ -11,10 +11,14 @@ async function getUserById({ userId }) {
 async function getPostsById(userId) {
   const postsList = await connection.query(
     `
-    SELECT  posts.*, COUNT(likes."postId") AS likes 
-    FROM posts LEFT JOIN likes ON likes."postId" = posts.id 
-    WHERE posts."userId" = $1 
-    GROUP BY posts.id, posts."userId" ;`,
+    SELECT posts.id, posts."userId", posts.description AS "postDescription",
+	    posts.link AS "postLink", users.name AS "userName", users.image AS "userImage"
+    FROM posts
+    JOIN users
+    ON users.id = posts."userId"
+    WHERE users.id = $1
+    ORDER BY posts."createdAt" DESC
+    LIMIT 20;`,
     [userId]
   );
   return postsList;
